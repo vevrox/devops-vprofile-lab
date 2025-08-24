@@ -1,0 +1,29 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Vagrant / VM
+.vagrant/
+*.box
+
+# Java / Maven
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Python / Misc
+__pycache__/
+
+# Logs
+*.log
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Env / Secrets
+.env
+*.secret

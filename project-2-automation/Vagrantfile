@@ -1,0 +1,34 @@
+Vagrant.configure("2") do |config|
+  # Optional: manage /etc/hosts on host and guests
+  if Vagrant.has_plugin?("vagrant-hostmanager")
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_host = true
+    config.hostmanager.include_offline = true
+  end
+
+  # Global defaults
+  config.vm.box_check_update = false
+
+  # Helper to define a VM
+  def define_vm(config, name, box, ip, script)
+    config.vm.define name do |node|
+      node.vm.hostname = name
+      node.vm.box = box
+      node.vm.network "private_network", ip: ip
+      node.vm.provider "virtualbox" do |vb|
+        vb.memory = 1024
+        vb.cpus = 1
+      end
+      node.vm.provision "shell", path: "scripts/#{script}"
+    end
+  end
+
+  # OS choices:
+  # - RHEL-like nodes use a generic Rocky Linux 9 base.
+  # - web01 uses Ubuntu 22.04 to align with apt + sites-available config.
+  define_vm(config, "db01",  "generic/rocky9",    "192.168.56.11", "db_provision.sh")
+  define_vm(config, "mc01",  "generic/rocky9",    "192.168.56.12", "mc_provision.sh")
+  define_vm(config, "rmq01", "generic/rocky9",    "192.168.56.13", "rmq_provision.sh")
+  define_vm(config, "app01", "generic/rocky9",    "192.168.56.14", "app_provision.sh")
+  define_vm(config, "web01", "ubuntu/jammy64",    "192.168.56.15", "web_provision.sh")
+end
